@@ -143,7 +143,7 @@ ______
 ├── classify_pred.py		// 混合光谱分类和解混模型在实测数据应用<br>
 ├── tools.py			// 工具函数<br>
 
-# # 3. 环境
+## 3. 环境
 论文实现的环境依赖性：<br>
 Python == 3.8.19<br>
 Tensorflow == 2.10.0<br>
@@ -151,7 +151,7 @@ Cuda == 11.2.2<br>
 cuDNN == 8.1.0.77<br>
 其他依赖项在requirements.txt<br>
 
-## 3.神经网络模型
+## 4.神经网络模型
 ─models：包含论文所用模型：<br>
 ResUNet<br>
 SE─ResUNet<br>
@@ -160,9 +160,7 @@ ECA─ResUNet<br>
 CBAM─ResUNet <br>
 CSAM─ResUNet<br>
 
-
-
-## 4.数据集
+## 5.数据集
 **─dataset：包含论文所用的训练集<br>**
 **─dataset_train_20000.mat：用于光谱重构模型训练的数据集，光谱数为20000<br>**
 {<br>
@@ -202,9 +200,9 @@ CSAM─ResUNet<br>
 ‘PCPE’#重构后PCPE光谱<br>
 ‘PCPE_norm’#归一化后重构的PCPE光谱<br>
 }<br>
-## 5.模型训练和预测<br>
+## 6.模型训练和预测<br>
 **快速开始<br>**
-### 5.1光谱重构神经网络：<br>
+### 6.1光谱重构神经网络：<br>
 **─train：光谱重构神经网络模型训练代码<br>**
 ─parser：配置参数，选择模型，设置batch size，learning rate，epochs等<br>
 ─train_path：训练数据集路径，加载”dataset_train_20000.mat”路径<br>
@@ -226,7 +224,7 @@ CSAM─ResUNet<br>
 ─run_path：训练好的模型路径（“模型名称_ _时间戳_”)<br>
 ─output：结果保存目录为“:/run/模型名称_ _时间戳_”<br>
 
-### 5.2混合微塑料拉曼光谱分类和解混神经网络：<br>
+### 6.2混合微塑料拉曼光谱分类和解混神经网络：<br>
 **─train_classify：光谱重构神经网络模型训练代码<br>**
 ─parser：配置参数，设置batch size，learning rate，epochs等<br>
 ─path_data_train：训练数据集路径，加载”dataset_train_mix_36000.mat”路径<br>
