@@ -14,19 +14,27 @@ A ResUNet model integrated with Channel and Spatial Attention Module (CSAM) for 
 
 ## 2. Contents<br>
 ├── README			// help<br>
-├── requirements.txt	// Environmental requirements<br>
-├── models				// Include the models used<br>
-├── dataset				// Contains experimental datasets used in the paper<br>
+├── requirements.txt	        // Environmental requirements<br>
+├── models			// Include the models used<br>
+├── dataset			// Contains experimental datasets used in the paper<br>
 ├── run				// Program running result<br>
 ├── train.py			// Training for spectral reconstruction model<br>
-├── fit.py				// Test of reconstruction for extra dataset<br>
+├── fit.py			// Test of reconstruction for extra dataset<br>
 ├── predict.py			// Reconstruction for spectra measured<br>
 ├── predict_refe.py		// Reconstruction for spectra measured from references<br>
 ├── train_classify.py		// Training code for classification and unmixing model<br>
 ├── classify_pred.py		// Classification and unmixing for spectra measured<br>
 ├── tools.py			// Function Toolbox<br>
 
-## 3. Neural Network Models<br>
+## 3. Environmental
+The environmental dependence of this paper：<br>
+Python == 3.8.19<br>
+Tensorflow == 2.10.0<br>
+CUDA == 11.2.2<br>
+cuDNN == 8.1.0.77<br>
+Other dependencies are in requirements.txt<br>
+
+## 4. Neural Network Models<br>
 ─‘models’: Contains implemented models from the paper:<br>
 ─ ResUNet<br>
 ─ SE─ResUNet<br>
@@ -35,7 +43,7 @@ A ResUNet model integrated with Channel and Spatial Attention Module (CSAM) for 
 ─ CBAM─ResUNet<br>
 ─ CSAM─ResUNet<br>
 
-## 4. Datasets<br>
+## 5. Datasets<br>
 **─‘dataset’: Contains experimental datasets used in the paper<br><br>**
 **─ ‘dataset_train_20000’: Training dataset for spectral reconstruction (20,000 spectra)<br>**
 { <br>
@@ -76,9 +84,9 @@ A ResUNet model integrated with Channel and Spatial Attention Module (CSAM) for 
 ‘PCPE_norm'#Reconstructed PCPE spectrum after normalization <br>
 }<br>
 
-## 5. Model Training and Prediction<br>
+## 6. Model Training and Prediction<br>
 **Quick Start<br>**
-### 5.1 Spectral Reconstruction Models:<br>
+### 6.1 Spectral Reconstruction Models:<br>
 
 **─ ‘train’: Training code for spectral reconstruction models<br>**
 	─ ‘parser’: Configure parameters (model selection, batch size, learning rate, epochs, etc.)<br>
@@ -101,7 +109,7 @@ A ResUNet model integrated with Channel and Spatial Attention Module (CSAM) for 
 	─‘path_list’：Select the dataset<br>
 	─‘output’：Results saved to ‘./run/model name_ _timestamp_’<br>
 
-### 5.2 Mixed─Spectra Classification Models:<br>
+### 6.2 Mixed─Spectra Classification Models:<br>
 **─ ‘train_classify’: Training code for classification models<br>**
 	─ ‘parser’: Configure parameters (batch size, learning rate, epochs, etc.)<br>
 	─ ‘path_data_train’: Training dataset path (e.g., "dataset_train_mix_36000.mat")<br>
@@ -123,17 +131,25 @@ ______
 
 ## 2.目录
 ├── README			// 帮助文档<br>
-├── requirements.txt	// 环境要求<br>
-├── models				// 包含使用的模型<br>
-├── dataset				// 包含使用的数据集<br>
+├── requirements.txt		// 环境要求<br>
+├── models			// 包含使用的模型<br>
+├── dataset			// 包含使用的数据集<br>
 ├── run				// 程序运行结果<br>
 ├── train.py			// 光谱重构模型的训练<br>
-├── fit.py				// 测试额外数据集的光谱重构<br>
+├── fit.py			// 测试额外数据集的光谱重构<br>
 ├── predict.py			// 对实测光谱进行光谱重构<br>
 ├── predict_refe.py		// 对参考文献的公开数据光谱重构<br>
 ├── train_classify.py		// 混合光谱分类和解混模型的训练代码<br>
 ├── classify_pred.py		// 混合光谱分类和解混模型在实测数据应用<br>
 ├── tools.py			// 工具函数<br>
+
+# # 3. 环境
+论文实现的环境依赖性：<br>
+Python == 3.8.19<br>
+Tensorflow == 2.10.0<br>
+Cuda == 11.2.2<br>
+cuDNN == 8.1.0.77<br>
+其他依赖项在requirements.txt<br>
 
 ## 3.神经网络模型
 ─models：包含论文所用模型：<br>
