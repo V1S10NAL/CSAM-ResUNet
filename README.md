@@ -148,7 +148,7 @@ CSAM─ResUNet<br>
 
 ## 4.数据集
 **─dataset：包含论文所用的训练集<br>**
-**├───dataset_train_20000.mat：用于光谱重构模型训练的数据集，光谱数为20000<br>**
+**─dataset_train_20000.mat：用于光谱重构模型训练的数据集，光谱数为20000<br>**
 {<br>
 ‘all_original_spectra’#高斯线形和洛伦兹线形线形叠加生成的voigt线形模拟光谱<br>
 ‘all_bl_spectra’#加入随机多项式基线的光谱<br>
