@@ -12,27 +12,23 @@ def eca_block(inputs, b=1, gamma=2):
     t = int(abs((math.log(channels, 2) + b) / gamma))
     kernel_size = max(t | 1, 3)  # 确保最小核尺寸为3
 
-    # 维度处理
     gap = layers.GlobalAveragePooling1D(keepdims=True)(inputs)  # [B, 1, C]
 
-    # 1D卷积处理（保持维度）
     conv = layers.Conv1D(
         filters=1,
         kernel_size=kernel_size,
         padding='same',
         use_bias=False,
         kernel_initializer='he_normal'
-    )(gap)  # 输出形状 [B, 1, 1]
+    )(gap)
 
-    # 生成注意力权重（自动广播）
     attention = layers.Activation('sigmoid')(conv)
 
-    # 直接相乘
     return layers.multiply([inputs, attention])
 
 def residual_block(input_tensor, num_filters):
     """定义一个残差块，加入eca 块"""
-    # 主路径
+
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(input_tensor)
     x = layers.BatchNormalization()(x)
     x = layers.Activation('relu')(x)
@@ -40,17 +36,14 @@ def residual_block(input_tensor, num_filters):
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(x)
     x = layers.BatchNormalization()(x)
 
-    # 加入 SE 块
     x = eca_block(x, num_filters)
 
-    # 跳跃连接
     if input_tensor.shape[-1] != num_filters:
         shortcut = layers.Conv1D(num_filters, kernel_size=1, padding='same')(input_tensor)
         shortcut = layers.BatchNormalization()(shortcut)
     else:
         shortcut = input_tensor
 
-    # 合并主路径和跳跃连接
     x = layers.Add()([x, shortcut])
     x = layers.Activation('relu')(x)
     return x
@@ -96,7 +89,7 @@ def ecaResUNet(num_features, num_outputs, args):
     # 创建模型
     model = tf.keras.Model(inputs=inputs, outputs=outputs)
 
-    # 使用学习率调度器
+
     learning_rate_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
         initial_learning_rate=args.learning_rate,
         decay_steps=args.num_spectra * 0.7 / args.batch_size,

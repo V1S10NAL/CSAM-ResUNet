@@ -28,10 +28,10 @@ sys.setrecursionlimit(1000)
 # device = cuda.get_current_device()+
 # device.reset()
 
-os.environ["CUDA_VISIBLE_DEVICES"] = '0'  # 指定0号GPU可用
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 config = tf.compat.v1.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.99  # 程序最多只能占用指定gpu80%的显存
-config.gpu_options.allow_growth = True  # 程序按需申请内存
+config.gpu_options.per_process_gpu_memory_fraction = 0.99
+config.gpu_options.allow_growth = True
 sess = tf.compat.v1.Session(config=config)
 
 # 参数设置
@@ -59,13 +59,12 @@ start_time = time.perf_counter()
 
 path_data_train = '.\\dataset\\dataset_train_mixture_36000.mat' ###
 path_data_pred= '.\\dataset\\dataset_mixture_denoised\\dataset1_denoised.mat'###
-run_path: str = 'CSAM_ResUNet_classification_20250617_085150'  ###############模型路径 CSAM_ResUNet_classification
-
+run_path: str = 'CSAM_ResUNet_classification_20250617_085150'  ###############模型路径
 parts = run_path.split('_')
 if len(parts) >= 2:
-    net_name = '_'.join(parts[:-2])  # 去除最后两个分段
+    net_name = '_'.join(parts[:-2])
 else:
-    net_name = run_path  # 没有足够分段时保留原字符串
+    net_name = run_path
 dataset = run_path
 
 spectra_mat = tools.load_mat_to_np(path_data_train)  ###dataset_train_mix_1000.mat     dataset_train_mixed_mp.mat
@@ -81,7 +80,6 @@ categories = args.MP_type
 num_classes = len(categories)
 category_to_idx = {cat: idx for idx, cat in enumerate(categories)}
 
-# 使用字典存储各材料对应的数据和标签列表
 data_dict = {
     'X': {m: [] for m in data_vars},
     'X1': {m: [] for m in data_vars},
@@ -146,7 +144,7 @@ y_test = []
 for var_name in data_vars:
     data = spectra_mat[var_name]
     print(var_name)
-    # 解析标签（前两位和后两位物质）#######################################
+    # 解析标签#######################################
     substances = [var_name[:2], var_name[2:]]  # 假设变量名格式如 PCPE
     label = np.zeros(num_classes)
     for sub in substances:

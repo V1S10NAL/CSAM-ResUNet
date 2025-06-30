@@ -7,7 +7,6 @@ from models import CSAM_ResUNet
 
 def residual_block(input_tensor, num_filters):
     """定义一个残差块"""
-    # 主路径
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(input_tensor)
     x = layers.BatchNormalization()(x)
     x = layers.Activation('relu')(x)
@@ -15,15 +14,12 @@ def residual_block(input_tensor, num_filters):
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(x)
     x = layers.BatchNormalization()(x)
 
-
-    # 跳跃连接
     if input_tensor.shape[-1] != num_filters:
         shortcut = layers.Conv1D(num_filters, kernel_size=1, padding='same')(input_tensor)
         shortcut = layers.BatchNormalization()(shortcut)
     else:
         shortcut = input_tensor
 
-    # 合并主路径和跳跃连接
     x = layers.Add()([x, shortcut])
     x = layers.Activation('relu')(x)
     return x
@@ -37,8 +33,7 @@ def encoder_block(input_tensor, num_filters):
 def decoder_block(input_tensor, skip_tensor, num_filters):
     """定义一个解码器块（上采样 + 跳跃连接 + 残差块）"""
     x = layers.Conv1DTranspose(num_filters, kernel_size=3, strides=2, padding='same')(input_tensor)
-    x = layers.concatenate([x, skip_tensor])  # 跳跃连接
-    x = residual_block(x, num_filters)
+    x = layers.concatenate([x, skip_tensor])
     return x
 
 def ResUNet(num_features, num_outputs, args):
@@ -60,8 +55,6 @@ def ResUNet(num_features, num_outputs, args):
     d3 = decoder_block(d2, x2, 128)  # 第三阶段
     d4 = decoder_block(d3, x1, 64)   # 第四阶段
 
-    # 输出层（回归任务，使用 relu 激活函数）
-
     outputs = layers.Conv1D(num_outputs, kernel_size=1, activation='relu',
                             kernel_regularizer=tf.keras.regularizers.l2(1e-5)
                             )(d4)
@@ -81,7 +74,6 @@ def ResUNet(num_features, num_outputs, args):
     )
     adam_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_schedule)
 
-    # 编译模型（回归任务，使用均方误差作为损失函数）
     model.compile(optimizer=adam_optimizer,
                   loss='mean_squared_error',
                   metrics=['mae', 'mape', 'mse',
@@ -119,7 +111,6 @@ def ResUNet_classification(num_features, num_outputs, args):
     outputs2 = layers.Conv1D(num_outputs, kernel_size=1, activation='relu',name='spectrum_B')(d4)
 
     # 分类分支----------------------------------------------------------------------
-    # 全局池化 + 全连接
     c = layers.Conv1D(1024, kernel_size=1, activation='relu',name='classification_branch')(b1)
     c_avg = layers.GlobalAveragePooling1D()(c)
     c_max = layers.GlobalMaxPooling1D()(c)

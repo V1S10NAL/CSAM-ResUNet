@@ -320,8 +320,6 @@ def CSAMResUNet_reconstruction(num_features, num_outputs, args):
     d3 = decoder_block(d2, x2, 128)  # 第三阶段
     d4 = decoder_block(d3, x1, 64)   # 第四阶段
 
-    # 输出层（1个长度为 1024 的一维数据）
-
     outputs = layers.Conv1D(num_outputs, kernel_size=1, activation='relu',
                             kernel_regularizer=tf.keras.regularizers.l2(1e-5)
                             )(d4)
@@ -379,7 +377,6 @@ def CSAMResUNet_classification(num_features, num_outputs, args):
     # 桥接层
     b1 = residual_block(p4, 1024)
 
-
     # 回归分支----------------------------------------------------------------------
     # 解码器
     d1 = decoder_block(b1, x4, 512)  # 第一阶段
@@ -392,14 +389,12 @@ def CSAMResUNet_classification(num_features, num_outputs, args):
     outputs2 = layers.Conv1D(num_outputs, kernel_size=1, activation='relu',name='spectrum_B')(d4)
 
     # 分类分支----------------------------------------------------------------------
-    # 全局池化 + 全连接
     c = CSAM_block(b1)
     c = layers.Conv1D(1024, kernel_size=1, activation='relu',name='classification_branch')(c)
     c_avg = layers.GlobalAveragePooling1D()(c)
     c_max = layers.GlobalMaxPooling1D()(c)
     c = layers.Concatenate()([c_avg, c_max])
 
-    # 全连接层
     c = layers.Dense(512, activation='relu')(c)
     c = layers.BatchNormalization()(c)
     c = layers.Dropout(0.5)(c)
@@ -407,9 +402,6 @@ def CSAMResUNet_classification(num_features, num_outputs, args):
     c = layers.Dropout(0.5)(c)
     c = layers.Dense(args.num_substances, activation='sigmoid', name='classification')(c)
     # 创建模型----------------------------------------------------------------------
-
-
-
     model = tf.keras.Model(inputs=inputs,
                            outputs=[outputs1,outputs2,c]
                            )
@@ -433,7 +425,6 @@ def CSAMResUNet_classification(num_features, num_outputs, args):
     )
 
     adam_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_schedule)
-    # 定义损失函数
 
     # 编译模型
     model.compile(optimizer=adam_optimizer,

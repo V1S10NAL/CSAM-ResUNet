@@ -4,21 +4,19 @@ import tools
 from tensorflow.keras.metrics import CosineSimilarity
 from models import CSAM_ResUNet
 
-
 def se_block(inputs, filters, ratio=8):
     """定义 SE 块"""
-    # Squeeze
+
     se = layers.GlobalAveragePooling1D()(inputs)
-    # Excitation
+
     se = layers.Dense(units=filters // ratio, activation='relu')(se)
     se = layers.Dense(units=filters, activation='sigmoid')(se)
-    # 加权
+
     out = layers.multiply([inputs, se])
     return out
 
 def residual_block(input_tensor, num_filters):
     """定义一个残差块，加入 SE 块"""
-    # 主路径
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(input_tensor)
     x = layers.BatchNormalization()(x)
     x = layers.Activation('relu')(x)
@@ -26,17 +24,14 @@ def residual_block(input_tensor, num_filters):
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(x)
     x = layers.BatchNormalization()(x)
 
-    # 加入 SE 块
     x = se_block(x, num_filters)
 
-    # 跳跃连接
     if input_tensor.shape[-1] != num_filters:
         shortcut = layers.Conv1D(num_filters, kernel_size=1, padding='same')(input_tensor)
         shortcut = layers.BatchNormalization()(shortcut)
     else:
         shortcut = input_tensor
 
-    # 合并主路径和跳跃连接
     x = layers.Add()([x, shortcut])
     x = layers.Activation('relu')(x)
     return x
@@ -50,7 +45,7 @@ def encoder_block(input_tensor, num_filters):
 def decoder_block(input_tensor, skip_tensor, num_filters):
     """定义一个解码器块（上采样 + 跳跃连接 + 残差块）"""
     x = layers.Conv1DTranspose(num_filters, kernel_size=3, strides=2, padding='same')(input_tensor)
-    x = layers.concatenate([x, skip_tensor])  # 跳跃连接
+    x = layers.concatenate([x, skip_tensor])
     x = residual_block(x, num_filters)
     return x
 
@@ -91,7 +86,6 @@ def seResUNet(num_features, num_outputs, args):
     )
     adam_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_schedule)
 
-    # 编译模型（回归任务，使用均方误差作为损失函数）
     model.compile(optimizer=adam_optimizer,
                   loss='mean_squared_error',
                   metrics=['mae', 'mape', 'mse',
@@ -128,7 +122,6 @@ def seResUNet_classification(num_features, num_outputs, args):
     outputs2 = layers.Conv1D(num_outputs, kernel_size=1, activation='relu',name='spectrum_B')(d4)
 
     # 分类分支----------------------------------------------------------------------
-    # 全局池化 + 全连接
     c = se_block(b1,1024)
     c = layers.Conv1D(1024, kernel_size=1, activation='relu',name='classification_branch')(c)
     c_avg = layers.GlobalAveragePooling1D()(c)

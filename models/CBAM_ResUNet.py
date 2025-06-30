@@ -45,25 +45,21 @@ def cbam_block(inputs):
 
 def residual_block(input_tensor, num_filters):
     """定义一个残差块，加入 cbam块"""
-    # 主路径
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(input_tensor)
     x = layers.BatchNormalization()(x)
     x = layers.Activation('relu')(x)
 
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(x)
     x = layers.BatchNormalization()(x)
-
     # 加入 CBAM 模块
     x = cbam_block(x)
 
-    # 跳跃连接
     if input_tensor.shape[-1] != num_filters:
         shortcut = layers.Conv1D(num_filters, kernel_size=1, padding='same')(input_tensor)
         shortcut = layers.BatchNormalization()(shortcut)
     else:
         shortcut = input_tensor
 
-    # 合并主路径和跳跃连接
     x = layers.Add()([x, shortcut])
     x = layers.Activation('relu')(x)
     return x
@@ -77,7 +73,7 @@ def encoder_block(input_tensor, num_filters):
 def decoder_block(input_tensor, skip_tensor, num_filters):
     """定义一个解码器块（上采样 + 跳跃连接 + 残差块）"""
     x = layers.Conv1DTranspose(num_filters, kernel_size=3, strides=2, padding='same')(input_tensor)
-    x = layers.concatenate([x, skip_tensor])  # 跳跃连接
+    x = layers.concatenate([x, skip_tensor])
     x = residual_block(x, num_filters)
     return x
 
@@ -118,14 +114,12 @@ def CbamResUNet(num_features, num_outputs, args):
     )
     adam_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_schedule)
 
-    # 编译模型（回归任务，使用均方误差作为损失函数）
     model.compile(optimizer=adam_optimizer,
                   loss='mean_squared_error',
                   metrics=['mae', 'mape', 'mse',
                            CosineSimilarity(axis=-1),
                            tools.LogCoshError()])
 
-    # 打印模型结构
     model.summary()
 
     return model
@@ -142,7 +136,6 @@ def CbamResUNet_classification(num_features, num_outputs, args):
 
     # 桥接层
     b1 = residual_block(p4, 1024)
-
 
     # 回归分支----------------------------------------------------------------------
     # 解码器
@@ -195,9 +188,7 @@ def CbamResUNet_classification(num_features, num_outputs, args):
     )
 
     adam_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_schedule)
-    # 定义损失函数
 
-    # 编译模型
     model.compile(optimizer=adam_optimizer,
                   loss={
                       'spectrum_A': loss_instance,                  # 回归损失1，Regression loss 1

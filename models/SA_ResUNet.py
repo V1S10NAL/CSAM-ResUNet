@@ -30,14 +30,11 @@ class SelfAttention(layers.Layer):
         dk = tf.cast(tf.shape(k)[-1], tf.float32)
         scaled_attention_logits = matmul_qk / tf.math.sqrt(dk)
 
-        # 应用Softmax获取注意力权重
         attention_weights = tf.nn.softmax(scaled_attention_logits, axis=-1)
 
-        # 加权求和
-        output = tf.matmul(attention_weights, v)  # (batch_size, seq_len, d_model)
-        output = self.dense(output)  # 最终投影
+        output = tf.matmul(attention_weights, v)
+        output = self.dense(output)
 
-        # 残差连接
         output += inputs
         return output
 
@@ -45,13 +42,13 @@ class SelfAttention(layers.Layer):
     def get_config(self):
         config = super(SelfAttention, self).get_config()
         config.update({
-            "num_heads": self.num_heads,  # 序列化自定义参数
+            "num_heads": self.num_heads,
         })
         return config
 
 def residual_block(input_tensor, num_filters):
     """定义一个残差块"""
-    # 主路径
+
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(input_tensor)
     x = layers.BatchNormalization()(x)
     x = layers.Activation('relu')(x)
@@ -59,18 +56,15 @@ def residual_block(input_tensor, num_filters):
     x = layers.Conv1D(num_filters, kernel_size=3, padding='same')(x)
     x = layers.BatchNormalization()(x)
 
-    # 跳跃连接
     if input_tensor.shape[-1] != num_filters:
         shortcut = layers.Conv1D(num_filters, kernel_size=1, padding='same')(input_tensor)
         shortcut = layers.BatchNormalization()(shortcut)
     else:
         shortcut = input_tensor
 
-    # 合并主路径和跳跃连接
     x = layers.Add()([x, shortcut])
     x = layers.Activation('relu')(x)
 
-    # 添加自注意力机制
     x = SelfAttention()(x)
     return x
 
@@ -83,8 +77,8 @@ def encoder_block(input_tensor, num_filters):
 def decoder_block(input_tensor, skip_tensor, num_filters):
     """定义一个解码器块（上采样 + 跳跃连接 + 残差块）"""
     x = layers.Conv1DTranspose(num_filters, kernel_size=3, strides=2, padding='same')(input_tensor)
-    x = layers.concatenate([x, skip_tensor])  # 跳跃连接
-    x = residual_block(x, num_filters) # 残差块已包含自注意力
+    x = layers.concatenate([x, skip_tensor])
+    x = residual_block(x, num_filters)
     return x
 
 def saResUNet(num_features, num_outputs, args):
@@ -106,7 +100,6 @@ def saResUNet(num_features, num_outputs, args):
     d3 = decoder_block(d2, x2, 128)  # 第三阶段
     d4 = decoder_block(d3, x1, 64)   # 第四阶段
 
-    # 输出层（回归任务，使用 relu 激活函数）
 
     outputs = layers.Conv1D(num_outputs, kernel_size=1, activation='relu')(d4)
 
@@ -122,7 +115,6 @@ def saResUNet(num_features, num_outputs, args):
     )
     adam_optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate_schedule)
 
-    # 编译模型（回归任务，使用均方误差作为损失函数）
     model.compile(optimizer=adam_optimizer,
                   loss='mean_squared_error',
                   metrics=['mae', 'mape', 'mse'])
