@@ -40,7 +40,7 @@ Other dependencies are in requirements.txt<br>
 ─ CSAM─ResUNet<br>
 
 ## 5. Datasets<br>
-**Dataset download address: (https://www.scidb.cn/s/BZ3QJv) <br>**
+**Dataset download address: (https://www.scidb.cn/s/NbEFze) <br>**
 The compressed package contains the dataset and the already trained model (run).<br>
 Extract the compressed package to the root directory of this project, or after extraction, copy the "dataset" folder to the root directory of this project<br>
 
@@ -86,7 +86,7 @@ Extract the compressed package to the root directory of this project, or after e
 
 ## 6. Model Training and Prediction<br>
 **Quick Start<br>**
-**Data set download address: (https://www.scidb.cn/s/BZ3QJv) <br>**
+**Data set download address: (https://www.scidb.cn/s/NbEFze) <br>**
 The compressed package contains a "run" folder, which includes the trained model. Extract the "CSAM-ResUNet" compressed package to the root directory of this project, or after extraction, copy the "run" folder to the root directory of this project
 ### 6.1 Spectral Reconstruction Models:<br>
 
@@ -125,7 +125,7 @@ The compressed package contains a "run" folder, which includes the trained model
 ## Citation
 If this project has been helpful to your research or work, please cite our paper:<br><br>
 @article{CSAM-ResUNet,<br>
-  title   = {Cascaded improved neural network for Raman spectra reconstruction, classification and unmixing: A case study of Raman spectra of microplastics},<br>
+  title   = {Cascaded improved neural network for Raman spectra of mixed microplastics reconstruction, classification and unmixing},<br>
   author  = {Weixiang Huang, Jiajin Chen, Hao Xiong, Tu Tan, Guishi Wang, Kun Liu, Chilai Chen and Xiaoming Gao},<br>
 
   year    = {2025},<br>
@@ -173,7 +173,7 @@ CBAM─ResUNet <br>
 CSAM─ResUNet<br>
 
 ## 5.数据集
-**数据集下载地址:(https://www.scidb.cn/s/BZ3QJv)<br>**
+**数据集下载地址:(https://www.scidb.cn/s/NbEFze)<br>**
 压缩包包含数据集(dataset)和已经训练好的模型(run)<br>
 **将压缩包解压到该项目根目录，或解压后将“dataset”文件夹复制到该项目根目录<br>**
 
@@ -220,7 +220,7 @@ CSAM─ResUNet<br>
 }<br>
 ## 6.模型训练和预测<br>
 **快速开始<br>**
-**数据集下载地址:(https://www.scidb.cn/s/BZ3QJv)<br>
+**数据集下载地址:(https://www.scidb.cn/s/NbEFze)<br>
 (压缩包内包含一个run文件夹，包含已经训练好的模型，将“CSAM-ResUNet“压缩包解压到该项目根目录，或解压后将“run”文件夹复制到该项目根目录).<br>**
 ### 6.1光谱重构神经网络：<br>
 **─train：光谱重构神经网络模型训练代码<br>**
@@ -259,7 +259,7 @@ CSAM─ResUNet<br>
 ### 引用
 如果本项目在您的研究或工作中有所帮助，请引用我们的论文：<br><br>
 @article{CSAM-ResUNet,<br>
-  title   = {Cascaded improved neural network for Raman spectra reconstruction, classification and unmixing: A case study of Raman spectra of microplastics},<br>
+  title   = {Cascaded improved neural network for Raman spectra of mixed microplastics reconstruction, classification and unmixing},<br>
 
   year    = {2025},<br>
   note    = {Under Review}<br>
