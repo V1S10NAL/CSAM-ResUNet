@@ -57,8 +57,8 @@ tools.set_seed(seed)
 ## 载入数据
 start_time = time.perf_counter()
 
-path_data_train = '.\\dataset\\dataset_train_mix_36000.mat'
-path_data_pred= '.\\dataset\\dataset1_denoised.mat'
+path_data_train = '.\\dataset\\dataset_train_mixture_36000.mat'
+path_data_pred= '.\\dataset\\dataset_mixture_denoised\\dataset1_denoised.mat'
 
 spectra_mat = tools.load_mat_to_np(path_data_train)  ###dataset_train_mix_1000.mat     dataset_train_mixed_mp.mat
 
@@ -1086,86 +1086,86 @@ for l in range(len(args.net_list)):
         roc_auc = auc(fpr, tpr)
         print(f"{args.MP_type[i]}: {roc_auc:.4f}")
 
-    #  ========== Grad-CAM ======================================
-    heatmaps_dict = {
-        'input': {m: [] for m in data_vars},
-        'heatmap1': {m: [] for m in data_vars},  # 改为两个独立键
-        'heatmap2': {m: [] for m in data_vars},
-        'top_classes': {m: [] for m in data_vars}
-    }
-
-    for var in data_vars:
-        X_test_cam = data_dict['X_test'][var][0]
-        X_test_cam = np.squeeze(X_test_cam)
-        X_test_cam = X_test_cam.reshape(1, 1024, 1)
-        heatmaps_dict['input'][var] = data_dict['X_test'][var][0]
-
-        # 生成热力图
-        heatmaps, top_classes = tools.generate_gradcam_heatmap(model, X_test_cam, top_k=2)
-
-        # 分别存储前两个热力图
-        if len(top_classes) >= 1:
-            heatmaps_dict['heatmap1'][var] = heatmaps[top_classes[0]]  # 最高概率类别
-        if len(top_classes) >= 2:
-            heatmaps_dict['heatmap2'][var] = heatmaps[top_classes[1]]  # 次高概率类别
-        heatmaps_dict['top_classes'][var] = top_classes
-
-    # 步骤8：可视化
-    plt.figure(figsize=(12, 6))
-    # 热力图叠加
-    heatmaps_names = [
-        'PCPE', 'PCPP', 'PCPS', 'PCPVC',
-        'PEPP', 'PEPS', 'PEPVC', 'PPPS',
-        'PPPVC', 'PSPVC'
-    ]
-    i = 1
-    for var in data_vars:
-        # 计算子图位置和对应的系数
-        subplot_pos = (2, 5, i)
-
-        # 创建子图
-        plt.subplot(*subplot_pos)
-
-        x_data = heatmaps_dict['input'][var]
-        # 绘制输入光谱
-        plt.plot(x_data, color='gray', alpha=0.3, label='Input')
-        # 绘制热力图
-        heatmap1 = heatmaps_dict['heatmap1'][var]
-        heatmap2 = heatmaps_dict['heatmap2'][var]
-        plt.plot(heatmap1, label=f"heatmap1")
-        plt.plot(heatmap2, label=f"heatmap2")
-        # 设置图表属性
-        plt.title(var)
-        plt.xlabel('Wavelength')
-        plt.ylabel('Intensity')
-        plt.legend()
-        i = i + 1
-    plt.tight_layout()
-    output_image_path = result_path + "/gradcam.png"  # 定义保存路径和文件名
-    plt.savefig(output_image_path, dpi=300, bbox_inches='tight')  # 保存为 PNG 文件
-    # 非阻塞显示图形
-    plt.show(block=False)
-
-    # 暂停一段时间（例如 2 秒）
-    plt.pause(2)  # 2 秒后继续执行
-
-    # 关闭图形窗口
-    plt.close()
-    print(f"\nGradCAM successfully saved to: ", output_image_path)
-
-    input_df = pd.DataFrame(heatmaps_dict['input'])
-    input_df.to_csv(result_path + "\grad cam_input_data.csv", index=False)
-
-    # 保存 heatmaps 数据
-    heatmaps_df = pd.DataFrame(heatmaps_dict['heatmap1'])
-    heatmaps_df.to_csv(result_path + "\grad cam_heatmap1_data.csv", index=False)
-    # 保存 heatmaps 数据
-    heatmaps_df = pd.DataFrame(heatmaps_dict['heatmap2'])
-    heatmaps_df.to_csv(result_path + "\grad cam_heatmap2_data.csv", index=False)
-
-    # 保存 top_classes 数据
-    top_classes_df = pd.DataFrame(heatmaps_dict['top_classes'])
-    top_classes_df.to_csv(result_path + "\grad cam_top_classes.csv", index=False)
+    # #  ========== Grad-CAM ======================================
+    # heatmaps_dict = {
+    #     'input': {m: [] for m in data_vars},
+    #     'heatmap1': {m: [] for m in data_vars},  # 改为两个独立键
+    #     'heatmap2': {m: [] for m in data_vars},
+    #     'top_classes': {m: [] for m in data_vars}
+    # }
+    #
+    # for var in data_vars:
+    #     X_test_cam = data_dict['X_test'][var][0]
+    #     X_test_cam = np.squeeze(X_test_cam)
+    #     X_test_cam = X_test_cam.reshape(1, 1024, 1)
+    #     heatmaps_dict['input'][var] = data_dict['X_test'][var][0]
+    #
+    #     # 生成热力图
+    #     heatmaps, top_classes = tools.generate_gradcam_heatmap(model, X_test_cam, top_k=2)
+    #
+    #     # 分别存储前两个热力图
+    #     if len(top_classes) >= 1:
+    #         heatmaps_dict['heatmap1'][var] = heatmaps[top_classes[0]]  # 最高概率类别
+    #     if len(top_classes) >= 2:
+    #         heatmaps_dict['heatmap2'][var] = heatmaps[top_classes[1]]  # 次高概率类别
+    #     heatmaps_dict['top_classes'][var] = top_classes
+    #
+    # # 步骤8：可视化
+    # plt.figure(figsize=(12, 6))
+    # # 热力图叠加
+    # heatmaps_names = [
+    #     'PCPE', 'PCPP', 'PCPS', 'PCPVC',
+    #     'PEPP', 'PEPS', 'PEPVC', 'PPPS',
+    #     'PPPVC', 'PSPVC'
+    # ]
+    # i = 1
+    # for var in data_vars:
+    #     # 计算子图位置和对应的系数
+    #     subplot_pos = (2, 5, i)
+    #
+    #     # 创建子图
+    #     plt.subplot(*subplot_pos)
+    #
+    #     x_data = heatmaps_dict['input'][var]
+    #     # 绘制输入光谱
+    #     plt.plot(x_data, color='gray', alpha=0.3, label='Input')
+    #     # 绘制热力图
+    #     heatmap1 = heatmaps_dict['heatmap1'][var]
+    #     heatmap2 = heatmaps_dict['heatmap2'][var]
+    #     plt.plot(heatmap1, label=f"heatmap1")
+    #     plt.plot(heatmap2, label=f"heatmap2")
+    #     # 设置图表属性
+    #     plt.title(var)
+    #     plt.xlabel('Wavelength')
+    #     plt.ylabel('Intensity')
+    #     plt.legend()
+    #     i = i + 1
+    # plt.tight_layout()
+    # output_image_path = result_path + "/gradcam.png"  # 定义保存路径和文件名
+    # plt.savefig(output_image_path, dpi=300, bbox_inches='tight')  # 保存为 PNG 文件
+    # # 非阻塞显示图形
+    # plt.show(block=False)
+    #
+    # # 暂停一段时间（例如 2 秒）
+    # plt.pause(2)  # 2 秒后继续执行
+    #
+    # # 关闭图形窗口
+    # plt.close()
+    # print(f"\nGradCAM successfully saved to: ", output_image_path)
+    #
+    # input_df = pd.DataFrame(heatmaps_dict['input'])
+    # input_df.to_csv(result_path + "\grad cam_input_data.csv", index=False)
+    #
+    # # 保存 heatmaps 数据
+    # heatmaps_df = pd.DataFrame(heatmaps_dict['heatmap1'])
+    # heatmaps_df.to_csv(result_path + "\grad cam_heatmap1_data.csv", index=False)
+    # # 保存 heatmaps 数据
+    # heatmaps_df = pd.DataFrame(heatmaps_dict['heatmap2'])
+    # heatmaps_df.to_csv(result_path + "\grad cam_heatmap2_data.csv", index=False)
+    #
+    # # 保存 top_classes 数据
+    # top_classes_df = pd.DataFrame(heatmaps_dict['top_classes'])
+    # top_classes_df.to_csv(result_path + "\grad cam_top_classes.csv", index=False)
 
     # ===================  保存到mat ===================
     containers_matrix = {

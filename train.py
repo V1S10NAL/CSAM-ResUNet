@@ -50,8 +50,8 @@ parser.add_argument('--video', type=bool, default=True, help='generate video')  
 
 ## Load data
 start_time = time.perf_counter()
-train_path = '.\\dataset\\dataset_train_20000.mat'
-extra_path = '.\\dataset\\dataset_extra_10000.mat'
+train_path = '.\\dataset\\dataset_train_20000.mat' ##'.\\dataset\\dataset_train_20000.mat'
+extra_path = '.\\dataset\\dataset_extra_10000.mat' ##'.\\dataset\\dataset_extra_10000.mat'
 spectra_numpy_array = tools.load_mat_to_np(train_path)
 simulated_spectra = spectra_numpy_array['all_simulate_spectra']
 original_spectra = spectra_numpy_array['all_original_spectra']

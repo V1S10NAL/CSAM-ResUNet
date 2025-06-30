@@ -57,8 +57,8 @@ tools.set_seed(seed)
 ## 载入数据
 start_time = time.perf_counter()
 
-path_data_train = '.\\dataset\\dataset_train_mix_36000.mat' ###
-path_data_pred= '.\\dataset\\dataset1_denoised.mat'###
+path_data_train = '.\\dataset\\dataset_train_mixture_36000.mat' ###
+path_data_pred= '.\\dataset\\dataset_mixture_denoised\\dataset1_denoised.mat'###
 run_path: str = 'CSAM_ResUNet_classification_20250617_085150'  ###############模型路径 CSAM_ResUNet_classification
 
 parts = run_path.split('_')
@@ -1120,7 +1120,7 @@ for l in range(len(args.net_list)):
         'heatmap2': {m: [] for m in data_vars},
         'top_classes': {m: [] for m in data_vars}
     }
-
+    index = 1
     for var in data_vars:
         X_test_cam = data_dict['X_test'][var][0]
         X_test_cam = np.squeeze(X_test_cam)

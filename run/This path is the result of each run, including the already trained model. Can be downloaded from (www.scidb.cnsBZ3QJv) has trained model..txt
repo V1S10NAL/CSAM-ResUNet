@@ -1,0 +1,2 @@
+This path is the result of each run, including the already trained model. 
+Can be downloaded from (https://www.scidb.cn/s/BZ3QJv) has trained model.

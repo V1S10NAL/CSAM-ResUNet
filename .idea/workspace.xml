@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c43cf66-3900-431a-b4e5-73c4ef4e411f" name="更改" comment="Initial commit" />
+    <list default="true" id="6c43cf66-3900-431a-b4e5-73c4ef4e411f" name="更改" comment="Initial commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classify_extra.py" beforeDir="false" afterPath="$PROJECT_DIR$/classify_extra.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train_classify.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_classify.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,7 +57,7 @@
     "Python.traditional process.executor": "Debug",
     "Python.traditional-SG.executor": "Debug",
     "Python.traditional-benchmark.executor": "Debug",
-    "Python.train.executor": "Run",
+    "Python.train.executor": "Debug",
     "Python.train_classify.executor": "Debug",
     "Python.train_classify2.executor": "Debug",
     "Python.train_opt_pars.executor": "Debug",
@@ -58,14 +65,19 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/Desktop/Project_raman_microplastics",
+    "last_opened_file_path": "D:/hwx/Project_raman_microplastics",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "settings.editor.selected.configurable": "vcs.Git",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\hwx\Project_raman_microplastics" />
       <recent name="D:\hwx\Project_Raman_MP" />
       <recent name="D:\hwx\Project_Raman_MP\models" />
     </key>
@@ -94,6 +106,8 @@
       <option name="presentableId" value="Default" />
       <updated>1744699659403</updated>
       <workItem from="1744800243149" duration="107000" />
+      <workItem from="1750990633842" duration="11619000" />
+      <workItem from="1751270393205" duration="1000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -119,7 +133,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750945348812</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1750946028632</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1750946028632</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -155,6 +177,8 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Project_raman_microplastics$tools.coverage" NAME="tools 覆盖结果" MODIFIED="1751006289432" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Project_raman_microplastics$classify_extra.coverage" NAME="classify_extra 覆盖结果" MODIFIED="1751006758678" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Project_Raman_MP$train.coverage" NAME="train 覆盖结果" MODIFIED="1744800255296" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

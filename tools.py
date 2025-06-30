@@ -531,18 +531,19 @@ def generate_gradcam_heatmap(model, input_sample, target_layer_suffix='classific
     """
 
     # 1. 寻找目标卷积层
-    target_layer = None
-    for layer in reversed(model.layers):
-        if target_layer_suffix in layer.name and isinstance(layer, tf.keras.layers.Conv1D):
-            target_layer = layer
-            break
-    if target_layer is None:
-        raise ValueError(f"未找到包含 '{target_layer_suffix}' 的卷积层")
+    target_layers = [layer for layer in model.layers
+                     if layer.name.endswith(target_layer_suffix) and 'conv' in layer.__class__.__name__.lower()]
+    if not target_layers:
+        raise ValueError(f"未找到名称以 '{target_layer_suffix}' 结尾的卷积层。")
+    target_layer = target_layers[0]
     conv_name = target_layer.name
-    # print(f"Selected layer: {conv_name}")
+    print(f"Selected layer: {conv_name}")
 
-    # 2. 获取分类输出层（假设名称为 'classification'）
-    classification_output = model.get_layer('classification').output
+    # 2. 获取分类输出层（假设名称为 'classification'）  获取 Sigmoid 激活前的 logits
+    classification_output = model.layers[-1].input
+    classification_layer = model.get_layer('classification')  # 假设分类层名称为'classification'
+    classification_output = classification_layer.input  # 获取logits输入
+
 
     # 3. 构建梯度模型
     grad_model = tf.keras.models.Model(
@@ -569,7 +570,7 @@ def generate_gradcam_heatmap(model, input_sample, target_layer_suffix='classific
     for class_idx in top_classes:
         with tf.GradientTape() as tape:
             tape.watch(input_var)
-            conv_out, preds = grad_model(input_var)
+            conv_out, preds = grad_model(input_var) # 重新计算前向传播
             loss = preds[0][class_idx]  # 当前类别的预测概率
 
         grads = tape.gradient(loss, conv_out)
@@ -581,20 +582,6 @@ def generate_gradcam_heatmap(model, input_sample, target_layer_suffix='classific
         heatmap = tf.reduce_sum(conv_out_val * pooled_grads[tf.newaxis, :], axis=-1)
         heatmap = tf.maximum(heatmap, 0) / (tf.reduce_max(heatmap) + 1e-7)
 
-
-        # 7.2 调整分辨率到原始输入长度
-        # original_length = input_sample.shape[1] ##1024
-        # if heatmap.shape[0] != original_length:
-        #     heatmap = tf.image.resize(
-        #         heatmap[tf.newaxis, :, tf.newaxis],
-        #         [original_length, 1],
-        #         method=interpolation
-        #     )
-        # heatmap =heatmap[:, 0, 0]
-        #
-        # heatmaps[class_idx] = heatmap.numpy()
-
-        # === 调整热力图尺寸到原始输入长度 ===
         original_steps = input_var.shape[1]  # 输入样本的原始时间步数
 
         # 扩展维度适配resize操作（需要 [batch, height, width, channels] 格式）
@@ -614,6 +601,68 @@ def generate_gradcam_heatmap(model, input_sample, target_layer_suffix='classific
         heatmaps[class_idx] = heatmap.numpy()
 
     return heatmaps, top_classes
+
+    # # Step 1: 找到目标卷积层
+    # target_layers = [layer for layer in model.layers
+    #                  if layer.name.endswith(target_layer_suffix) and 'conv' in layer.__class__.__name__.lower()]
+    # if not target_layers:
+    #     raise ValueError(f"未找到名称以 '{target_layer_suffix}' 结尾的卷积层。")
+    # target_layer = target_layers[0]
+    # conv_name = target_layer.name
+    # print(f"Selected layer: {conv_name}")
+    # # Step 2: 获取 Sigmoid 激活前的 logits
+    # # 假设最后一层是 Sigmoid 激活，logits 是其输入
+    # logits_output = model.layers[-1].input
+    #
+    # # Step 3: 构建子模型，输出目标卷积层的输出和 logits
+    # sub_model = tf.keras.models.Model(inputs=model.input, outputs=[target_layer.output, logits_output])
+    #
+    # # Step 4: 获取输入样本的特征图和 logits
+    # with tf.GradientTape() as tape:
+    #     conv_output, logits = sub_model(input_sample)
+    #     tape.watch(conv_output)
+    #
+    # # Step 5: 计算 logits 相对于特征图的梯度
+    # grads = tape.gradient(logits, conv_output)  # shape: (1, time_steps, num_channels, num_classes)
+    #
+    # # Step 6: 对梯度在时间步和 batch 维度上取平均，得到每个通道对每个类别的权重
+    # pooled_grads = tf.reduce_mean(grads, axis=(0, 1))  # shape: (num_channels, num_classes)
+    #
+    # # Step 7: 获取特征图，假设 shape 为 (1, time_steps, num_channels)
+    # conv_output = conv_output.numpy()[0]  # shape: (time_steps, num_channels)
+    # pooled_grads = pooled_grads.numpy()  # shape: (num_channels, num_classes)
+    #
+    # # Step 8: 获取模型输出的 Sigmoid 概率，用于确定 top_k 类别
+    # predictions = model.predict(input_sample)
+    # top_classes = np.argsort(predictions[0])[-top_k:]
+    #
+    # # Step 9: 生成每个 top_k 类别的 Grad-CAM 热力图
+    # heatmaps = {}
+    # for cls_idx in top_classes:
+    #     # Step 10: 使用该类别的梯度权重对特征图进行加权求和
+    #     cam = np.zeros(conv_output.shape[0], dtype=np.float32)
+    #     for i in range(conv_output.shape[1]):  # 遍历所有通道
+    #         cam += pooled_grads[i, cls_idx] * conv_output[:, i]
+    #
+    #     # Step 11: 应用 ReLU
+    #     cam = np.maximum(cam, 0)
+    #
+    #     # Step 12: 归一化
+    #     if np.all(cam == 0):
+    #         cam = np.zeros_like(cam)
+    #     else:
+    #         cam = (cam - np.min(cam)) / (np.max(cam) - np.min(cam))
+    #
+    #     # Step 13: 上采样热力图到输入的时间步数
+    #     cam = np.expand_dims(cam, axis=0)  # shape: (1, time_steps)
+    #     cam = tf.image.resize(cam,
+    #                           size=(input_sample.shape[1], 1),
+    #                           method=interpolation).numpy()
+    #     cam = np.squeeze(cam, axis=(0, 2))  # shape: (time_steps,)
+    #
+    #     heatmaps[cls_idx] = cam
+    #
+    # return heatmaps, top_classes.tolist()
 
 def evaluate_multilabel_accuracy(
         y_true: np.ndarray,
