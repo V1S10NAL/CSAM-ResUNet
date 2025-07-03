@@ -126,7 +126,7 @@ The compressed package contains a "run" folder, which includes the trained model
 If this project has been helpful to your research or work, please cite our paper:<br><br>
 @article{CSAM-ResUNet,<br>
   title   = {Cascaded improved neural network for Raman spectra of mixed microplastics reconstruction, classification and unmixing},<br>
-  author  = {Weixiang Huang, Jiajin Chen, Hao Xiong, Tu Tan, Guishi Wang, Kun Liu, Chilai Chen and Xiaoming Gao},<br>
+  author  = {Weixiang Huang, Jiajin Chen, Hao Xiong, Ligang Shao, Guishi Wang, Kun Liu, Chilai Chen and Xiaoming Gao},<br>
   journal = {Analytical Chemistry},<br>
   year    = {2025},<br>
   note    = {Under Review}<br>
@@ -260,6 +260,7 @@ CSAM─ResUNet<br>
 如果本项目在您的研究或工作中有所帮助，请引用我们的论文：<br><br>
 @article{CSAM-ResUNet,<br>
   title   = {Cascaded improved neural network for Raman spectra of mixed microplastics reconstruction, classification and unmixing},<br>
+  author  = {Weixiang Huang, Jiajin Chen, Hao Xiong, Ligang Shao, Guishi Wang, Kun Liu, Chilai Chen and Xiaoming Gao},<br>
   journal = {Analytical Chemistry},<br>
   year    = {2025},<br>
   note    = {Under Review}<br>
