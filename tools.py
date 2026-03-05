@@ -793,7 +793,7 @@ def set_seed(seed):
     # 启用操作确定性（可选）
     tf.config.experimental.enable_op_determinism()
 
-def snr(x, x_0):
+def snr(x_0, x):
     """
     计算原始光谱和去噪后光谱的信噪比（SNR）
     :param x: 去噪后光谱（干净光谱）
