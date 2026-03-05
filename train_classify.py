@@ -45,7 +45,7 @@ parser.add_argument('--epochs', type=int, default=100, help='number of epochs')
 parser.add_argument('--net_list', type=str, default=['CSAM_ResUNet_classification'],
                     help='net_list')  # 此处选择模型['ResUNet','SE_ResUNet','ECA_ResUNet','BAM_ResUNet','CBAM_ResUNet','CSAM_ResUNet_classification']
 parser.add_argument('--num_substances', type=int, default=5, help='num_substances')
-parser.add_argument('--MP_type', type=str, default=['PC', 'PE', 'PP', 'PS', 'PVC'], help='microplastics types')
+parser.add_argument('--MP_type', type=str, default=['PC', 'PE', 'PP', 'PS', 'PV', 'PM', 'PT'], help='microplastics types')
 args = parser.parse_args(args=[])
 
 # 设置随机种子
@@ -57,16 +57,18 @@ tools.set_seed(seed)
 ## 载入数据
 start_time = time.perf_counter()
 
-path_data_train = '.\\dataset\\dataset_train_mixture_36000.mat'
+path_data_train = '.\\dataset\\dataset_train_mixture_33600.mat'
 path_data_pred= '.\\dataset\\dataset_mixture_denoised\\dataset1_denoised.mat'
 
 spectra_mat = tools.load_mat_to_np(path_data_train)  ###dataset_train_mix_1000.mat     dataset_train_mixed_mp.mat
 
 data_vars = [
-    'PCPE', 'PCPP', 'PCPS', 'PCPVC',
-    'PEPP', 'PEPS', 'PEPVC',
-    'PPPS', 'PPPVC',
-    'PSPVC'
+    'PCPE', 'PCPP', 'PCPS', 'PCPV', 'PCPM', 'PCPT',
+    'PEPP', 'PEPS', 'PEPV', 'PEPM', 'PEPT',
+    'PPPS', 'PPPV', 'PPPM', 'PPPT',
+    'PSPV', 'PSPM', 'PSPT',
+    'PVPM', 'PVPT',
+    'PMPT'
 ]
 
 categories = args.MP_type
@@ -460,13 +462,29 @@ for l in range(len(args.net_list)):
         "PCPE": ["PC", "PE"],
         "PCPP": ["PC", "PP"],
         "PCPS": ["PC", "PS"],
-        "PCPVC": ["PC", "PVC"],
+        "PCPV": ["PC", "PV"],
+        "PCPM": ["PC", "PM"],
+        "PCPT": ["PC", "PT"],
+
         "PEPP": ["PE", "PP"],
         "PEPS": ["PE", "PS"],
-        "PEPVC": ["PE", "PVC"],
+        "PEPV": ["PE", "PV"],
+        "PEPM": ["PE", "PM"],
+        "PEPT": ["PE", "PT"],
+
         "PPPS": ["PP", "PS"],
-        "PPPVC": ["PP", "PVC"],
-        "PSPVC": ["PS", "PVC"],
+        "PPPV": ["PP", "PV"],
+        "PPPM": ["PP", "PM"],
+        "PPPT": ["PP", "PT"],
+
+        "PSPV": ["PS", "PV"],
+        "PSPM": ["PS", "PM"],
+        "PSPT": ["PS", "PT"],
+
+        "PVPM": ["PS", "PM"],
+        "PVPT": ["PS", "PT"],
+
+        "PMPT": ["PM", "PT"],
     }
     for var_name in data_dict['y_test_pred']:
         # 获取真实标签和预测概率
@@ -814,7 +832,7 @@ for l in range(len(args.net_list)):
     # 多标签分类报告
     print("\n二维向量多标签 Classification Report:")
     print(classification_report(y_test, y_pred_binary,
-                                target_names=['PC', 'PP', 'PS', 'PE', 'PVC'],
+                                target_names=['PC', 'PP', 'PS', 'PE', 'PVC', 'PMMA', 'PTFE'],
                                 #target_names=[f"Substance_{i}" for i in range(args.num_substances)]
                                 ))
 
@@ -846,7 +864,7 @@ for l in range(len(args.net_list)):
         y_pred=y_test_classify_pred,
         output_image_path=output_image_path,
         # class_names=[f"Substance_{i}" for i in range(args.num_substances)],
-        class_names=['PC', 'PP', 'PS', 'PE', 'PVC'],
+        class_names=['PC', 'PP', 'PS', 'PE', 'PVC', 'PMMA', 'PTFE'],
         threshold=0.5,
         normalize=True
     )
@@ -870,10 +888,12 @@ for l in range(len(args.net_list)):
     spectra_mat = tools.load_mat_to_np(path_data_pred)
 
     data_vars_norm = [
-        'PCPE_norm', 'PCPP_norm', 'PCPS_norm', 'PCPVC_norm',
-        'PEPP_norm', 'PEPS_norm', 'PEPVC_norm',
-        'PPPS_norm', 'PPPVC_norm',
-        'PSPVC_norm'
+        'PCPE_norm', 'PCPP_norm', 'PCPS_norm', 'PCPV_norm', 'PCPM_norm', 'PCPT_norm',
+        'PEPP_norm', 'PEPS_norm', 'PEPV_norm', 'PEPM_norm', 'PEPT_norm',
+        'PPPS_norm', 'PPPV_norm', 'PPPM_norm', 'PPPT_norm',
+        'PSPV_norm', 'PSPM_norm', 'PSPT_norm',
+        'PVPM_norm', 'PVPT_norm',
+        'PMPT_norm'
     ]
     print("\n====== 实测混合光谱结果评估 ======")
     # 初始化数据列表
@@ -942,13 +962,29 @@ for l in range(len(args.net_list)):
         "PCPE": ["PC", "PE"],
         "PCPP": ["PC", "PP"],
         "PCPS": ["PC", "PS"],
-        "PCPVC": ["PC", "PVC"],
+        "PCPV": ["PC", "PV"],
+        "PCPM": ["PC", "PM"],
+        "PCPT": ["PC", "PT"],
+
         "PEPP": ["PE", "PP"],
         "PEPS": ["PE", "PS"],
-        "PEPVC": ["PE", "PVC"],
+        "PEPV": ["PE", "PV"],
+        "PEPM": ["PE", "PM"],
+        "PEPT": ["PE", "PT"],
+
         "PPPS": ["PP", "PS"],
-        "PPPVC": ["PP", "PVC"],
-        "PSPVC": ["PS", "PVC"],
+        "PPPV": ["PP", "PV"],
+        "PPPM": ["PP", "PM"],
+        "PPPT": ["PP", "PT"],
+
+        "PSPV": ["PS", "PV"],
+        "PSPM": ["PS", "PM"],
+        "PSPT": ["PS", "PT"],
+
+        "PVPM": ["PS", "PM"],
+        "PVPT": ["PS", "PT"],
+
+        "PMPT": ["PM", "PT"],
     }
 
     for var_name in data_dict['y_extra_pred']:
@@ -1048,7 +1084,7 @@ for l in range(len(args.net_list)):
     # 多标签分类报告
     print("\n二维向量多标签Classification Report:")
     print(classification_report(y_fit, y_fit_pred_binary,digits=4,
-                                target_names=['PC', 'PP', 'PS', 'PE', 'PVC'],
+                                target_names=['PC', 'PP', 'PS', 'PE', 'PVC', 'PMMA', 'PTFE'],
                                 #target_names=[f"Substance_{i}" for i in range(args.num_substances)]
                                 ))
 
@@ -1074,7 +1110,7 @@ for l in range(len(args.net_list)):
         y_pred=y_fit_classify_pred,
         output_image_path=output_image_path,
         #class_names=[f"Substance_{i}" for i in range(args.num_substances)],
-        class_names=['PC', 'PP', 'PS', 'PE', 'PVC'],
+        class_names=['PC', 'PP', 'PS', 'PE', 'PVC', 'PMMA', 'PTFE'],
         threshold=0.5,
         normalize=True
     )
@@ -1114,9 +1150,12 @@ for l in range(len(args.net_list)):
     # plt.figure(figsize=(12, 6))
     # # 热力图叠加
     # heatmaps_names = [
-    #     'PCPE', 'PCPP', 'PCPS', 'PCPVC',
-    #     'PEPP', 'PEPS', 'PEPVC', 'PPPS',
-    #     'PPPVC', 'PSPVC'
+    #     'PCPE', 'PCPP', 'PCPS', 'PCPV', 'PCPM', 'PCPT',
+    #     'PEPP', 'PEPS', 'PEPV', 'PEPM', 'PEPT',
+    #     'PPPS', 'PPPV', 'PPPM', 'PPPT',
+    #     'PSPV', 'PSPM', 'PSPT',
+    #     'PVPM', 'PVPT',
+    #     'PMPT'
     # ]
     # i = 1
     # for var in data_vars:
