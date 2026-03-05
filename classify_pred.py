@@ -1,5 +1,5 @@
 """
-用于拟合额外其他光谱
+载入训练好的模型，用于实测的微塑料混合组分拉曼光谱的分类和解混
 """
 import math
 import time
@@ -40,9 +40,9 @@ parser.add_argument('--train_data_ratio', type=float, default=0.8, help='trainin
 parser.add_argument('--learning_rate', type=float, default=0.0001, help='learning rate')
 parser.add_argument('--batch_size', type=int, default=8, help='batch size')
 parser.add_argument('--epochs', type=int, default=100, help='number of epochs')
-parser.add_argument('--dataset', type=str, default='test_data', help='dataset')  # 此处选择数据集
-parser.add_argument('--num_substances', type=int, default=5, help='num_substances')
-parser.add_argument('--MP_type', type=str, default=['PC', 'PE', 'PP', 'PS', 'PVC'], help='microplastics types')
+parser.add_argument('--dataset', type=str, default='test_data', help='dataset')
+parser.add_argument('--num_substances', type=int, default=7, help='num_substances')
+parser.add_argument('--MP_type', type=str, default=['PC', 'PE', 'PP', 'PS', 'PV', 'PM', 'PT'], help='microplastics types')
 parser.add_argument('--save2mat', type=bool, default=True, help='save2mat')
 
 args = parser.parse_args(args=[])
@@ -90,13 +90,13 @@ for path in path_list:
 
     print(f"\nLoaded {path}")
     path_data_pred = path
-    run_path: str = 'CSAM_ResUNet_classification_20250617_085150'                          #################CSAM_ResUNet_classification_20250524_135115###CSAM_ResUNet_classification_20250524_154531######改模型 CSAM_ResUNet_classification
+    run_path: str = 'CSAM_ResUNet_classification_20251119_002532'                          ######改模型 CSAM_ResUNet_classification
 
     parts = run_path.split('_')
     if len(parts) >= 2:
-        net_name = '_'.join(parts[:-2])  # 去除最后两个分段
+        net_name = '_'.join(parts[:-2])
     else:
-        net_name = run_path  # 没有足够分段时保留原字符串
+        net_name = run_path
     dataset = run_path
 
 
@@ -104,10 +104,12 @@ for path in path_list:
     spectra_mat = tools.load_mat_to_np(path_data_pred)  ###dataset_train_mix_1000.mat     dataset_train_mixed_mp.mat
 
     data_vars = [
-        'PCPE', 'PCPP', 'PCPS', 'PCPVC',
-        'PEPP', 'PEPS', 'PEPVC',
-        'PPPS', 'PPPVC',
-        'PSPVC'
+        'PCPE', 'PCPP', 'PCPS', 'PCPV', 'PCPM', 'PCPT',
+        'PEPP', 'PEPS', 'PEPV', 'PEPM', 'PEPT',
+        'PPPS', 'PPPV', 'PPPM', 'PPPT',
+        'PSPV', 'PSPM', 'PSPT',
+        'PVPM', 'PVPT',
+        'PMPT'
     ]
 
     categories = args.MP_type
@@ -317,11 +319,14 @@ for path in path_list:
 
 
     data_vars_norm = [
-            'PCPE_norm', 'PCPP_norm', 'PCPS_norm', 'PCPVC_norm',
-            'PEPP_norm', 'PEPS_norm', 'PEPVC_norm',
-            'PPPS_norm', 'PPPVC_norm',
-            'PSPVC_norm'
-        ]
+        'PCPE_norm', 'PCPP_norm', 'PCPS_norm', 'PCPV_norm', 'PCPM_norm', 'PCPT_norm',
+        'PEPP_norm', 'PEPS_norm', 'PEPV_norm', 'PEPM_norm', 'PEPT_norm',
+        'PPPS_norm', 'PPPV_norm', 'PPPM_norm', 'PPPT_norm',
+        'PSPV_norm', 'PSPM_norm', 'PSPT_norm',
+        'PVPM_norm', 'PVPT_norm',
+        'PMPT_norm'
+    ]
+
     print("\n====== 实测混合光谱结果评估 ======")
 
     # 初始化数据列表
@@ -341,9 +346,9 @@ for path in path_list:
 
             # 添加到列表
         data_dict['X_extra'][var_name] = data
-        data_dict['y_extra'][var_name].append(np.tile(label, (data.shape[0], 1)))  # 标签重复对应样本数
+        data_dict['y_extra'][var_name].append(np.tile(label, (data.shape[0], 1)))
         spectra_mix_fit.append(data)
-        labels_mix_fit.append(np.tile(label, (data.shape[0], 1)))  # 标签重复对应样本数
+        labels_mix_fit.append(np.tile(label, (data.shape[0], 1)))
 
         print(label)
     print('Data have been loaded')
@@ -390,13 +395,29 @@ for path in path_list:
         "PCPE": ["PC", "PE"],
         "PCPP": ["PC", "PP"],
         "PCPS": ["PC", "PS"],
-        "PCPVC": ["PC", "PVC"],
+        "PCPV": ["PC", "PV"],
+        "PCPM": ["PC", "PM"],
+        "PCPT": ["PC", "PT"],
+
         "PEPP": ["PE", "PP"],
         "PEPS": ["PE", "PS"],
-        "PEPVC": ["PE", "PVC"],
+        "PEPV": ["PE", "PV"],
+        "PEPM": ["PE", "PM"],
+        "PEPT": ["PE", "PT"],
+
         "PPPS": ["PP", "PS"],
-        "PPPVC": ["PP", "PVC"],
-        "PSPVC": ["PS", "PVC"],
+        "PPPV": ["PP", "PV"],
+        "PPPM": ["PP", "PM"],
+        "PPPT": ["PP", "PT"],
+
+        "PSPV": ["PS", "PV"],
+        "PSPM": ["PS", "PM"],
+        "PSPT": ["PS", "PT"],
+
+        "PVPM": ["PS", "PM"],
+        "PVPT": ["PS", "PT"],
+
+        "PMPT": ["PM", "PT"],
     }
 
     for var_name in data_dict['y_extra_pred']:
@@ -409,7 +430,7 @@ for path in path_list:
         metrics = tools.evaluate_multilabel_accuracy(
             y_true=y_true,
             y_pred_proba=y_pred_proba,
-            class_names=args.MP_type,  # 替换为你的类别名称列表
+            class_names=args.MP_type,
             var=var_name,
             var_to_labels=var_to_labels,
             type_mp=args.MP_type,
@@ -431,7 +452,7 @@ for path in path_list:
     wavenumber = np.linspace(132.57, 4051.96, 1024)
     fig = plt.figure(figsize=(6, 6))
     plt.subplot(2, 2, 1)
-    plt.plot(wavenumber, X_fit[10], label='Mixed spectra', linewidth=2, alpha=0.7)  #linewidth 线宽，alpha透明的
+    plt.plot(wavenumber, X_fit[10], label='Mixed spectra', linewidth=2, alpha=0.7)
     plt.plot(wavenumber, x_fit_A_pred[10], label='Spectrum A', linewidth=2, alpha=0.7)
     plt.plot(wavenumber, x_fit_B_pred[10], label='Spectrum B', linewidth=2, alpha=0.7)
 
@@ -441,7 +462,7 @@ for path in path_list:
     plt.legend()
 
     plt.subplot(2, 2, 2)
-    plt.plot(wavenumber, X_fit[10], label='Mixed spectra', linewidth=2, alpha=0.7)  #linewidth 线宽，alpha透明的
+    plt.plot(wavenumber, X_fit[10], label='Mixed spectra', linewidth=2, alpha=0.7)
 
     plt.title('Mixture')
     plt.xlabel('Raman shift')
@@ -498,7 +519,7 @@ for path in path_list:
 
     print("\n二维向量多标签Classification Report:")
     print(classification_report(y_fit, y_fit_pred_binary,digits=4,
-                                target_names=['PC', 'PP', 'PS', 'PE', 'PVC'],
+                                target_names=['PC', 'PP', 'PS', 'PE', 'PV', 'PM', 'PT'],
                                 #target_names=[f"Substance_{i}" for i in range(args.num_substances)]
                                 ))
 
@@ -524,7 +545,7 @@ for path in path_list:
         y_pred=y_fit_classify_pred,
         output_image_path=output_image_path,
         #class_names=[f"Substance_{i}" for i in range(args.num_substances)],
-        class_names=['PC', 'PP', 'PS', 'PE', 'PVC'],
+        class_names=['PC', 'PP', 'PS', 'PE', 'PV', 'PM', 'PT'],
         threshold=0.5,
         normalize=True
     )
