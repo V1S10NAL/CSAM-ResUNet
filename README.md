@@ -1,7 +1,6 @@
 # README<br>
 
-**Working in Progress**<br>
-**This repository accompanies our paper currently under review**<br>
+**This repository accompanies our paper in *Analytical Chemistry***<br>
 
 ## 1. Introduction<br>
 A ResUNet model integrated with Channel and Spatial Attention Module (CSAM) for Raman spectral applications including:<br>
@@ -63,7 +62,7 @@ Extract the compressed package to the root directory of this project, or after e
 ‘PC_norm’#measured PC spectra after normalization <br>
 ‘raw_spectra’#all microplastic species Normalized spectra <br>
 } <br><br>
-**─ ‘dataset_train_mix_36000’: Training dataset for mixed─spectra classification (36,000 spectra)<br>**
+**─ ‘dataset_train_mix_33600’: Training dataset for mixed─spectra classification (33,600 spectra)<br>**
 { <br>
 ‘Data_mix_sumilate_Struct’#Simulated spectra of 10 classes of mixed microplastics Dataset <br>
 ‘Data_endmember_Struct1/2’#Single spectra corresponding to 10-class mixing spectra <br>
@@ -114,7 +113,7 @@ The compressed package contains a "run" folder, which includes the trained model
 ### 6.2 Mixed─Spectra Classification Models:<br>
 **─ ‘train_classify’: Training code for classification models<br>**
 	─ ‘parser’: Configure parameters (batch size, learning rate, epochs, etc.)<br>
-	─ ‘path_data_train’: Training dataset path (e.g., "dataset_train_mix_36000.mat")<br>
+	─ ‘path_data_train’: Training dataset path (e.g., "dataset_train_mix_33600.mat")<br>
 	─ ‘path_data_pred’: Experimental mixed─spectra dataset path<br>
 	─ ‘output’: Results saved to ‘./run/model name_ _timestamp_’<br>
 
@@ -125,17 +124,16 @@ The compressed package contains a "run" folder, which includes the trained model
 ## Citation
 If this project has been helpful to your research or work, please cite our paper:<br><br>
 @article{CSAM-ResUNet,<br>
-  title   = {Cascaded improved neural network for Raman spectra of mixed microplastics reconstruction, classification and unmixing},<br>
-  author  = {Weixiang Huang, Jiajin Chen, Hao Xiong, Ligang Shao, Guishi Wang, Kun Liu, Chilai Chen and Xiaoming Gao},<br>
-  journal = {Analytical Chemistry},<br>
-  year    = {2025},<br>
-  note    = {Under Review}<br>
+  title   = {Cascaded Improved Neural Network for the Reconstruction, Classification, and Unmixing of the Raman Spectra of Mixed Microplastics},<br>
+  year    = {2026},<br>
+  author  = {Huang, Weixiang and Chen, Jiajin and Xiong, Hao and Shao, Ligang and Wang, Guishi and Liu, Kun and Chen, Chilai and Gao, Xiaoming},<br>
+  doi = {10.1021/acs.analchem.5c04049},<br>
 }
 ______
 <br><br>
 # README
-**正在进行的工作**<br>
-这个存储库伴随着我们目前正在审查的论文。<br>
+
+**这个存储库伴随着我们在 *Analytical Chemistry* 的论文**<br>
 
 ## 1.简介
 一种结合通道和空间注意力模块（Channel and Spatial Attention Module, CSAM）的ResUNet模型，用于拉曼光谱的噪声去除和基线矫正的重构，混合样品拉曼光谱分类识别和解混。
@@ -156,7 +154,7 @@ ______
 
 
 ## 3.环境
-论文实现的环境依赖：<br>
+论文实现的环境依赖：
 Python == 3.8.19<br>
 Tensorflow == 2.10.0<br>
 Cuda == 11.2.2<br>
@@ -198,7 +196,7 @@ CSAM─ResUNet<br>
 ‘PC_norm’#归一化后测量的PC光谱<br>
 ‘raw_spectra’#所有的微塑料种类归一化后的光谱<br>
 }<br><br>
-**─dataset_train_mixture_36000.mat：混合光谱分类模型训练的数据集，光谱数为36000<br>**
+**─dataset_train_mixture_33600.mat：混合光谱分类模型训练的数据集，光谱数为33600<br>**
 {<br>
 ‘Data_mix_sumilate_Struct’#10类混合微塑料模拟光谱数据集<br>
 ‘Data_endmember_Struct1/2’#10类混合光谱对应的单一光谱<br>
@@ -247,7 +245,7 @@ CSAM─ResUNet<br>
 ### 6.2混合微塑料拉曼光谱分类和解混神经网络：<br>
 **─train_classify：光谱重构神经网络模型训练代码<br>**
 ─parser：配置参数，设置batch size，learning rate，epochs等<br>
-─path_data_train：训练数据集路径，加载”dataset_train_mix_36000.mat”路径<br>
+─path_data_train：训练数据集路径，加载”dataset_train_mix_33600.mat”路径<br>
 ─path_data_pred：实测混合样品光谱数据集路径<br>
 ─output：结果保存目录为“:/run/模型名称_ _时间戳_”<br>
 
@@ -259,9 +257,8 @@ CSAM─ResUNet<br>
 ### 引用
 如果本项目在您的研究或工作中有所帮助，请引用我们的论文：<br><br>
 @article{CSAM-ResUNet,<br>
-  title   = {Cascaded improved neural network for Raman spectra of mixed microplastics reconstruction, classification and unmixing},<br>
-  author  = {Weixiang Huang, Jiajin Chen, Hao Xiong, Ligang Shao, Guishi Wang, Kun Liu, Chilai Chen and Xiaoming Gao},<br>
-  journal = {Analytical Chemistry},<br>
-  year    = {2025},<br>
-  note    = {Under Review}<br>
+  title   = {Cascaded Improved Neural Network for the Reconstruction, Classification, and Unmixing of the Raman Spectra of Mixed Microplastics},<br>
+  year    = {2026},<br>
+  author  = {Huang, Weixiang and Chen, Jiajin and Xiong, Hao and Shao, Ligang and Wang, Guishi and Liu, Kun and Chen, Chilai and Gao, Xiaoming},<br>
+  doi = {10.1021/acs.analchem.5c04049},<br>
 }
