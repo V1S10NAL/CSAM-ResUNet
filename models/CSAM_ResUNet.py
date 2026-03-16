@@ -164,7 +164,7 @@ class StopAfterEpochsDecay(tf.keras.optimizers.schedules.LearningRateSchedule):
             "num_spectra": self.num_spectra
         }
 
-def channel_attention(inputs):
+def channel_attention(inputs, ratio=4):
     """
     参考双卷积eca优化的通道注意力
     Refer to the channel attention optimized by double convolution eca
@@ -178,41 +178,37 @@ def channel_attention(inputs):
                        use_bias=False, activation='relu', kernel_initializer='he_normal')(avg_pool)
     avg = layers.Conv1D(1, kernel_size=3, padding='same',
                        use_bias=False, activation='sigmoid', kernel_initializer='he_normal')(avg)
-
     max = layers.Conv1D(1, kernel_size=5, padding='same',
                        use_bias=False, activation='relu', kernel_initializer='he_normal')(max_pool)
     max = layers.Conv1D(1, kernel_size=3, padding='same',
                         use_bias=False, activation='sigmoid', kernel_initializer='he_normal')(max)
     combined = layers.Add()([avg, max])
-
     x = layers.Activation('sigmoid')(combined)
 
-    # _, steps, channels = inputs.shape
-    # avg_pool = layers.GlobalAveragePooling1D(keepdims=True)(inputs)  # (batch, 1, channels)
-    # max_pool = layers.GlobalMaxPooling1D(keepdims=True)(inputs)      # (batch, 1, channels)
-    #
-    # # # 转置为 (batch, channels, 1)
-    # # avg_pool = layers.Permute((2, 1))(avg_pool)
-    # # max_pool = layers.Permute((2, 1))(max_pool)
-    #
-    # # 动态计算 kernel_size（参考 ECA 论文）
-    # kernel_size = int(math.floor((channels + 1) / 2))
-    # kernel_size = kernel_size if kernel_size % 2 else kernel_size + 1
-    #
-    # # 跨通道交互
-    # avg = layers.Conv1D(1, kernel_size=kernel_size, padding='same',
-    #                     use_bias=False, activation='relu', kernel_initializer='he_normal')(avg_pool)
-    # avg = layers.Conv1D(1, kernel_size=3, padding='same',
-    #                     use_bias=False, activation='sigmoid', kernel_initializer='he_normal')(avg)
-    #
-    # max_out = layers.Conv1D(1, kernel_size=kernel_size, padding='same',
-    #                         use_bias=False, activation='relu', kernel_initializer='he_normal')(max_pool)
-    # max_out = layers.Conv1D(1, kernel_size=3, padding='same',
-    #                         use_bias=False, activation='sigmoid', kernel_initializer='he_normal')(max_out)
-    #
-    # combined = layers.Add()([avg, max_out])  # (batch, channels, 1)
+    # 动态计算filters版本：
+    # channels = inputs.shape[-1]
+    # avg_pool = layers.GlobalAveragePooling1D(keepdims=True)(inputs)
+    # max_pool = layers.GlobalMaxPooling1D(keepdims=True)(inputs)
+    # shared_conv1 = layers.Conv1D(
+    #     filters=max(1, channels // ratio),
+    #     kernel_size=1,
+    #     padding='same',
+    #     use_bias=False,
+    #     activation='relu',
+    #     kernel_initializer='he_normal'
+    # )
+    # shared_conv2 = layers.Conv1D(
+    #     filters=channels,
+    #     kernel_size=1,
+    #     padding='same',
+    #     use_bias=False,
+    #     activation='linear',
+    #     kernel_initializer='he_normal'
+    # )
+    # avg_out = shared_conv2(shared_conv1(avg_pool))
+    # max_out = shared_conv2(shared_conv1(max_pool))
+    # combined = layers.Add()([avg_out, max_out])
     # x = layers.Activation('sigmoid')(combined)
-    # # x = layers.Permute((2, 1))(x)  # 恢复为 (batch, 1, channels)
 
 
     return x
